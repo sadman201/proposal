@@ -90,6 +90,20 @@
         opacity: 0;
       }
     }
+
+    /* Funny popup text */
+    .popup {
+      position: absolute;
+      font-size: 20px;
+      color: #ff0066;
+      font-weight: bold;
+      animation: fadeUp 1.5s forwards;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 1; transform: translateY(0); }
+      to { opacity: 0; transform: translateY(-50px); }
+    }
   </style>
 </head>
 <body>
@@ -118,11 +132,18 @@
       "You Complete Me 🌹"
     ];
 
-    // No button moves randomly but never overlaps Yes button
-    noBtn.addEventListener("mouseover", () => {
-      const yesRect = yesBtn.getBoundingClientRect();
-      const containerRect = container.getBoundingClientRect();
-      
+    const funnyLines = [
+      "You can't say No! 😜",
+      "Only YES works ❤️",
+      "Nice try 😂",
+      "No is disabled 😎",
+      "Haha, you missed! 🤭",
+      "Come on, just say YES 💘",
+      "Running away... 🏃‍♂️💨"
+    ];
+
+    // Function to move No button randomly (not overlapping Yes)
+    function moveNoButton() {
       let randomX, randomY;
       let overlap = true;
 
@@ -130,7 +151,6 @@
         randomX = Math.random() * (container.clientWidth - noBtn.offsetWidth);
         randomY = Math.random() * (container.clientHeight - noBtn.offsetHeight);
 
-        // Check if new position overlaps Yes button
         const noLeft = randomX;
         const noRight = randomX + noBtn.offsetWidth;
         const noTop = randomY;
@@ -149,7 +169,22 @@
       noBtn.style.position = "absolute";
       noBtn.style.left = randomX + "px";
       noBtn.style.top = randomY + "px";
-    });
+
+      // Show funny popup message
+      const popup = document.createElement("div");
+      popup.classList.add("popup");
+      popup.innerText = funnyLines[Math.floor(Math.random() * funnyLines.length)];
+      popup.style.left = (randomX + 20) + "px";
+      popup.style.top = (randomY - 30) + "px";
+      container.appendChild(popup);
+
+      setTimeout(() => popup.remove(), 1500);
+    }
+
+    // PC hover
+    noBtn.addEventListener("mouseover", moveNoButton);
+    // Mobile touch
+    noBtn.addEventListener("touchstart", moveNoButton);
 
     // Yes button click
     yesBtn.addEventListener("click", () => {
